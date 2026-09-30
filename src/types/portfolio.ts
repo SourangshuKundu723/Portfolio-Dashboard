@@ -27,3 +27,10 @@ export interface SectorSummary {
   totalPresentValue: number | null;
   gainLoss: number | null;
 }
+
+export interface PortfolioSummary {
+  holdings: HoldingData[];
+  totalInvestment: number;
+  totalPresentValue: number | null;
+  totalGainLoss: number | null;
+}

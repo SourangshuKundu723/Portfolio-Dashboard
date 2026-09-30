@@ -3,6 +3,7 @@ export type {
   MarketData,
   HoldingData,
   SectorSummary,
+  PortfolioSummary,
 } from "./portfolio";
 
 export type {

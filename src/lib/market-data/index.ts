@@ -1,1 +1,1 @@
-export {};
+export { getYahooMarketData } from "./yahoo-finance";

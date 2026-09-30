@@ -1,1 +1,1 @@
-export {};
+export { calculatePortfolio } from "./calculations";
