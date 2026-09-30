@@ -29,12 +29,12 @@ export function PortfolioTable() {
         if (!res.ok) {
           throw new Error(`Failed to fetch data (status ${res.status})`);
         }
-        
+
         const json = (await res.json()) as ApiResponse<PortfolioSummary>;
         if (!json.success || !json.data) {
           throw new Error(json.error || "Failed to load portfolio data");
         }
-        
+
         setData(json.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -99,6 +99,8 @@ export function PortfolioTable() {
                 <TableHead className="text-right">Portfolio %</TableHead>
                 <TableHead className="text-right">NSE/BSE</TableHead>
                 <TableHead className="text-right">CMP</TableHead>
+                <TableHead className="text-right">P/E Ratio</TableHead>
+                <TableHead className="text-right">Latest Earnings</TableHead>
                 <TableHead className="text-right">Present Value</TableHead>
                 <TableHead className="text-right">Gain/Loss</TableHead>
               </TableRow>
@@ -107,7 +109,7 @@ export function PortfolioTable() {
               {data.holdings.map((h) => {
                 const isGain = h.gainLoss !== null && h.gainLoss > 0;
                 const isLoss = h.gainLoss !== null && h.gainLoss < 0;
-                
+
                 return (
                   <TableRow key={`${h.exchange}-${h.exchangeCode}`}>
                     <TableCell className="font-medium">
@@ -132,13 +134,19 @@ export function PortfolioTable() {
                     <TableCell className="text-right">
                       {h.marketData.cmp !== null ? formatCurrency(h.marketData.cmp) : "N/A"}
                     </TableCell>
+                    <TableCell className="text-right">
+                      {h.marketData.peRatio !== null ? h.marketData.peRatio.toFixed(2) : "N/A"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {h.marketData.latestEarnings !== null ? h.marketData.latestEarnings.toFixed(2) : "N/A"}
+                    </TableCell>
                     <TableCell className="text-right font-medium">
                       {h.presentValue !== null ? formatCurrency(h.presentValue) : "N/A"}
                     </TableCell>
-                    <TableCell 
+                    <TableCell
                       className={`text-right font-medium ${isGain ? 'text-emerald-500' : isLoss ? 'text-red-500' : ''}`}
                     >
-                      {h.gainLoss !== null 
+                      {h.gainLoss !== null
                         ? (h.gainLoss > 0 ? "+" : "") + formatCurrency(h.gainLoss)
                         : "N/A"
                       }
