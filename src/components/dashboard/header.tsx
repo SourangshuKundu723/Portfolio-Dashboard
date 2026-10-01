@@ -1,6 +1,7 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function DashboardHeader() {
   return (
@@ -21,11 +22,7 @@ export function DashboardHeader() {
         </div>
 
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-          <span className="hidden sm:inline">System Ready</span>
+          <ModeToggle />
         </div>
       </div>
     </header>
