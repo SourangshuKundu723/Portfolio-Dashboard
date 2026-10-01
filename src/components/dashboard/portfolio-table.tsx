@@ -11,7 +11,15 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-export function PortfolioTable({ data }: { data: PortfolioSummary }) {
+export function PortfolioTable({
+  data,
+  isRefreshing = false,
+  lastUpdated = null
+}: {
+  data: PortfolioSummary;
+  isRefreshing?: boolean;
+  lastUpdated?: Date | null;
+}) {
 
 
 
@@ -31,6 +39,23 @@ export function PortfolioTable({ data }: { data: PortfolioSummary }) {
         )}
       </CardHeader>
       <CardContent>
+        <div className="-mt-4 mb-3 flex items-center justify-end text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            {isRefreshing ? (
+              <span className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                Updating...
+              </span>
+            ) : (
+              <span>
+                Last updated: {lastUpdated ? lastUpdated.toLocaleTimeString() : ""}
+              </span>
+            )}
+          </div>
+        </div>
         <div className="rounded-md border">
           <Table>
             <TableHeader>

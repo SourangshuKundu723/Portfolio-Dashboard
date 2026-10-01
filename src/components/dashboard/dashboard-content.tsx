@@ -14,30 +14,57 @@ export function DashboardContent() {
   const [data, setData] = useState<PortfolioSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  useEffect(() => {
-    async function fetchPortfolio() {
-      try {
-        const res = await fetch("/api/portfolio");
-        if (!res.ok) {
-          throw new Error(`Failed to fetch data (status ${res.status})`);
-        }
-        
-        const json = (await res.json()) as ApiResponse<PortfolioSummary>;
-        if (!json.success || !json.data) {
-          throw new Error(json.error || "Failed to load portfolio data");
-        }
-        
-        setData(json.data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An unknown error occurred");
-      } finally {
-        setLoading(false);
-      }
+  const fetchPortfolio = async (isBackground = false) => {
+    if (isBackground) {
+      setIsRefreshing(true);
+    } else {
+      setLoading(true);
     }
 
+    try {
+      const res = await fetch("/api/portfolio");
+      if (!res.ok) {
+        throw new Error(`Failed to fetch data (status ${res.status})`);
+      }
+      
+      const json = (await res.json()) as ApiResponse<PortfolioSummary>;
+      if (!json.success || !json.data) {
+        throw new Error(json.error || "Failed to load portfolio data");
+      }
+      
+      setData(json.data);
+      setLastUpdated(new Date());
+      // Clear any previous background errors if successful
+      if (isBackground) setError(null);
+    } catch (err) {
+      if (!isBackground) {
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+      } else {
+        // Just log background errors, don't break the UI
+        console.error("Refresh failed:", err);
+      }
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
     fetchPortfolio();
   }, []);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (!isRefreshing && !loading) {
+        fetchPortfolio(true);
+      }
+    }, 15000);
+
+    return () => clearInterval(intervalId);
+  }, [isRefreshing, loading]);
 
   if (loading) {
     return (
@@ -85,6 +112,8 @@ export function DashboardContent() {
 
   return (
     <div className="space-y-8 w-full">
+
+
       <div className="grid gap-6 md:grid-cols-2">
         <PortfolioAllocationChart 
           sectorSummaries={data.sectorSummaries} 
@@ -95,7 +124,7 @@ export function DashboardContent() {
         />
       </div>
       
-      <PortfolioTable data={data} />
+      <PortfolioTable data={data} isRefreshing={isRefreshing} lastUpdated={lastUpdated} />
     </div>
   );
 }

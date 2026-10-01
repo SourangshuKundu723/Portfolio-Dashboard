@@ -1,5 +1,6 @@
 import type { Holding, MarketData } from "@/types";
 import YahooFinance from "yahoo-finance2";
+import { marketDataCache } from "./cache";
 
 const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
 
@@ -43,27 +44,29 @@ function getYahooSymbol(holding: Holding): string {
 
 export async function getYahooMarketData(holding: Holding): Promise<MarketData> {
   const yahooSymbol = getYahooSymbol(holding);
+  
+  return marketDataCache.getOrFetch(`yahoo_${yahooSymbol}`, 15, async () => {
+    try {
+      const result = await yf.quote(yahooSymbol);
 
-  try {
-    const result = await yf.quote(yahooSymbol);
+      if (!result || result.regularMarketPrice == null) {
+        console.error(
+          `[Yahoo Finance] No data for ${holding.companyName} (${yahooSymbol})`
+        );
+        return { cmp: null, peRatio: null, latestEarnings: null };
+      }
 
-    if (!result || result.regularMarketPrice == null) {
+      return {
+        cmp: result.regularMarketPrice,
+        peRatio: null,
+        latestEarnings: null,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
       console.error(
-        `[Yahoo Finance] No data for ${holding.companyName} (${yahooSymbol})`
+        `[Yahoo Finance] Failed for ${holding.companyName} (${yahooSymbol}): ${message}`
       );
       return { cmp: null, peRatio: null, latestEarnings: null };
     }
-
-    return {
-      cmp: result.regularMarketPrice,
-      peRatio: null,
-      latestEarnings: null,
-    };
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    console.error(
-      `[Yahoo Finance] Failed for ${holding.companyName} (${yahooSymbol}): ${message}`
-    );
-    return { cmp: null, peRatio: null, latestEarnings: null };
-  }
+  });
 }
