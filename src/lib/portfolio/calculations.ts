@@ -3,7 +3,7 @@ import { getYahooMarketData, getGoogleMarketData } from "../market-data";
 
 export async function calculatePortfolio(holdings: Holding[]): Promise<PortfolioSummary> {
   let totalInvestment = 0;
-  
+
   // First pass: Calculate initial investment for each holding
   // Investment = Purchase Price * Quantity
   const baseHoldings = holdings.map(holding => {
@@ -12,20 +12,21 @@ export async function calculatePortfolio(holdings: Holding[]): Promise<Portfolio
     return { holding, investment };
   });
 
-  let totalPresentValue: number | null = 0;
-  let hasMissingData = false;
+  let totalPresentValue = 0;
+  let totalInvestmentWithPv = 0;
+  let missingDataCount = 0;
 
-  // Second pass: Fetch market data and calculate final values
+  // Fetch market data and calculate final values
   const holdingPromises = baseHoldings.map(async ({ holding, investment }) => {
     // Fetch Yahoo (CMP) and Google (PE, EPS) concurrently
     const [yahooData, googleData] = await Promise.all([
       getYahooMarketData(holding),
       getGoogleMarketData(holding)
     ]);
-    
+
     // Portfolio % = Investment / Total Investment * 100
     const portfolioPercent = totalInvestment > 0 ? (investment / totalInvestment) * 100 : 0;
-    
+
     let presentValue: number | null = null;
     let gainLoss: number | null = null;
 
@@ -34,13 +35,11 @@ export async function calculatePortfolio(holdings: Holding[]): Promise<Portfolio
       presentValue = yahooData.cmp * holding.quantity;
       // Gain/Loss = Present Value - Investment
       gainLoss = presentValue - investment;
-      
-      if (!hasMissingData && totalPresentValue !== null) {
-        totalPresentValue += presentValue;
-      }
+
+      totalPresentValue += presentValue;
+      totalInvestmentWithPv += investment;
     } else {
-      hasMissingData = true;
-      totalPresentValue = null;
+      missingDataCount++;
     }
 
     return {
@@ -59,12 +58,50 @@ export async function calculatePortfolio(holdings: Holding[]): Promise<Portfolio
 
   const holdingDataList = await Promise.all(holdingPromises);
 
-  const totalGainLoss = totalPresentValue !== null ? totalPresentValue - totalInvestment : null;
+  // Calculate sector summaries
+  const sectorMap = new Map<string, { investment: number; pv: number; investmentWithPv: number; missingDataCount: number; count: number }>();
+  
+  holdingDataList.forEach((h) => {
+    const current = sectorMap.get(h.sector) || { investment: 0, pv: 0, investmentWithPv: 0, missingDataCount: 0, count: 0 };
+    current.investment += h.investment;
+    current.count++;
+    
+    if (h.presentValue !== null) {
+      current.pv += h.presentValue;
+      current.investmentWithPv += h.investment;
+    } else {
+      current.missingDataCount++;
+    }
+    
+    sectorMap.set(h.sector, current);
+  });
+
+  const sectorSummaries = Array.from(sectorMap.entries()).map(([sector, data]) => {
+    // Only calculate PV and Gain/Loss if at least one holding has data
+    const hasAnyPv = data.missingDataCount < data.count;
+    const pv = hasAnyPv ? data.pv : null;
+    const gainLoss = hasAnyPv ? data.pv - data.investmentWithPv : null;
+    
+    return {
+      sector,
+      totalInvestment: data.investment,
+      totalPresentValue: pv,
+      gainLoss,
+      missingDataCount: data.missingDataCount,
+    };
+  });
+
+  // Calculate final overall totals
+  const hasAnyTotalPv = missingDataCount < holdings.length;
+  const finalTotalPresentValue = hasAnyTotalPv ? totalPresentValue : null;
+  const finalTotalGainLoss = hasAnyTotalPv ? totalPresentValue - totalInvestmentWithPv : null;
 
   return {
     holdings: holdingDataList,
+    sectorSummaries,
     totalInvestment,
-    totalPresentValue,
-    totalGainLoss,
+    totalPresentValue: finalTotalPresentValue,
+    totalGainLoss: finalTotalGainLoss,
+    missingDataCount,
   };
 }

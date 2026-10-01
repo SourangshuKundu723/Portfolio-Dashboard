@@ -13,12 +13,12 @@ import {
   Wallet,
 } from "lucide-react";
 
-import { PortfolioTable } from "@/components/dashboard/portfolio-table";
+import { DashboardContent } from "@/components/dashboard/dashboard-content";
 
 export default function DashboardPage() {
   return (
     <div className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-7xl flex-col justify-center px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mb-16">
+      <div className="mb-12">
         <div className="flex items-center gap-4 mb-4">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Portfolio Dashboard
@@ -35,7 +35,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="w-full">
-        <PortfolioTable />
+        <DashboardContent />
       </div>
     </div>
   );

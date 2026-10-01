@@ -1,0 +1,101 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { ApiResponse, PortfolioSummary } from "@/types";
+import { PortfolioTable } from "./portfolio-table";
+import { PortfolioAllocationChart } from "./portfolio-allocation-chart";
+import { SectorPerformanceChart } from "./sector-performance-chart";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AlertCircle } from "lucide-react";
+
+export function DashboardContent() {
+  const [data, setData] = useState<PortfolioSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchPortfolio() {
+      try {
+        const res = await fetch("/api/portfolio");
+        if (!res.ok) {
+          throw new Error(`Failed to fetch data (status ${res.status})`);
+        }
+        
+        const json = (await res.json()) as ApiResponse<PortfolioSummary>;
+        if (!json.success || !json.data) {
+          throw new Error(json.error || "Failed to load portfolio data");
+        }
+        
+        setData(json.data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPortfolio();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6 w-full">
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader><CardTitle>Portfolio Allocation</CardTitle></CardHeader>
+            <CardContent><Skeleton className="h-[300px] w-full" /></CardContent>
+          </Card>
+          <Card>
+            <CardHeader><CardTitle>Sector Performance</CardTitle></CardHeader>
+            <CardContent><Skeleton className="h-[300px] w-full" /></CardContent>
+          </Card>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Portfolio Holdings</CardTitle>
+            <CardDescription>Fetching live market data...</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Error loading portfolio</AlertTitle>
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (!data) return null;
+
+  return (
+    <div className="space-y-8 w-full">
+      <div className="grid gap-6 md:grid-cols-2">
+        <PortfolioAllocationChart 
+          sectorSummaries={data.sectorSummaries} 
+          totalInvestment={data.totalInvestment} 
+        />
+        <SectorPerformanceChart 
+          sectorSummaries={data.sectorSummaries} 
+        />
+      </div>
+      
+      <PortfolioTable data={data} />
+    </div>
+  );
+}

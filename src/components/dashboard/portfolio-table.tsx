@@ -1,8 +1,6 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import type { ApiResponse, PortfolioSummary } from "@/types";
-import { formatCurrency, formatPercent } from "@/lib/utils/formatting";
+import type { PortfolioSummary } from "@/types";
+import { formatCurrency } from "@/lib/utils/formatting";
 import {
   Table,
   TableBody,
@@ -12,80 +10,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
+export function PortfolioTable({ data }: { data: PortfolioSummary }) {
 
-export function PortfolioTable() {
-  const [data, setData] = useState<PortfolioSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchPortfolio() {
-      try {
-        const res = await fetch("/api/portfolio");
-        if (!res.ok) {
-          throw new Error(`Failed to fetch data (status ${res.status})`);
-        }
-
-        const json = (await res.json()) as ApiResponse<PortfolioSummary>;
-        if (!json.success || !json.data) {
-          throw new Error(json.error || "Failed to load portfolio data");
-        }
-
-        setData(json.data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An unknown error occurred");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchPortfolio();
-  }, []);
-
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Portfolio Holdings</CardTitle>
-          <CardDescription>Fetching live market data...</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error loading portfolio</AlertTitle>
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
-    );
-  }
-
-  if (!data) return null;
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Portfolio Holdings</CardTitle>
-        <CardDescription>
-          Real-time snapshot of your investments. Total Investment: {formatCurrency(data.totalInvestment)}
-          {data.totalPresentValue !== null && ` | Present Value: ${formatCurrency(data.totalPresentValue)}`}
-        </CardDescription>
+      <CardHeader className="flex flex-row items-start justify-between">
+        <div>
+          <CardTitle>Portfolio Holdings</CardTitle>
+          <CardDescription>
+            Real-time snapshot of your investments. Total Investment: {formatCurrency(data.totalInvestment)}
+          </CardDescription>
+        </div>
+        {data.missingDataCount > 0 && (
+          <Badge variant="destructive" className="ml-4 shrink-0">
+            {data.missingDataCount} {data.missingDataCount === 1 ? "holding" : "holdings"} missing market data
+          </Badge>
+        )}
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
@@ -100,7 +43,7 @@ export function PortfolioTable() {
                 <TableHead className="text-right">NSE/BSE</TableHead>
                 <TableHead className="text-right">CMP</TableHead>
                 <TableHead className="text-right">P/E Ratio</TableHead>
-                <TableHead className="text-right">Latest Earnings</TableHead>
+                <TableHead className="text-right">EPS</TableHead>
                 <TableHead className="text-right">Present Value</TableHead>
                 <TableHead className="text-right">Gain/Loss</TableHead>
               </TableRow>
