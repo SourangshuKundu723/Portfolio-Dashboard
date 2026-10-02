@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { PieChart as PieChartIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface PortfolioAllocationChartProps {
@@ -46,17 +47,20 @@ export function PortfolioAllocationChart({
 
   return (
     <Card className="flex flex-col">
-      <CardHeader>
-        <CardTitle>Portfolio Allocation</CardTitle>
-        <CardDescription>Investment distribution by sector</CardDescription>
+      <CardHeader className="flex flex-row items-center gap-4">
+        <PieChartIcon className="h-8 w-8 text-muted-foreground" />
+        <div>
+          <CardTitle>Portfolio Allocation</CardTitle>
+          <CardDescription>Investment distribution by sector</CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {data.length === 0 ? (
-          <div className="flex h-[300px] items-center justify-center text-muted-foreground">
+          <div className="flex h-[250px] items-center justify-center text-muted-foreground">
             No data available
           </div>
         ) : (
-          <div className="h-[300px] w-full">
+          <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -79,9 +83,9 @@ export function PortfolioAllocationChart({
                   formatter={(value: any) => formatCurrency(Number(value) || 0)}
                   labelFormatter={(name) => `Sector: ${name}`}
                 />
-                <Legend 
-                  layout="vertical" 
-                  verticalAlign="middle" 
+                <Legend
+                  layout="vertical"
+                  verticalAlign="middle"
                   align="right"
                   wrapperStyle={{
                     fontSize: '12px',

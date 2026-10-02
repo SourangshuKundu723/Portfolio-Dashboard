@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { BarChart3 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface SectorPerformanceChartProps {
@@ -34,17 +35,20 @@ export function SectorPerformanceChart({
 
   return (
     <Card className="flex flex-col">
-      <CardHeader>
-        <CardTitle>Sector Performance</CardTitle>
-        <CardDescription>Compare investment vs present value across sectors</CardDescription>
+      <CardHeader className="flex flex-row items-center gap-4">
+        <BarChart3 className="h-8 w-8 text-muted-foreground" />
+        <div>
+          <CardTitle>Sector Performance</CardTitle>
+          <CardDescription>Compare investment vs present value across sectors</CardDescription>
+        </div>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {data.length === 0 ? (
-          <div className="flex h-[300px] items-center justify-center text-muted-foreground">
+          <div className="flex h-[250px] items-center justify-center text-muted-foreground">
             No data available
           </div>
         ) : (
-          <div className="h-[300px] w-full">
+          <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
@@ -56,34 +60,34 @@ export function SectorPerformanceChart({
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12 }}
                   dy={10}
                 />
-                <YAxis 
+                <YAxis
                   tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 12 }}
                 />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: any) => formatCurrency(Number(value) || 0)}
                   cursor={{ fill: 'rgba(0,0,0,0.05)' }}
                 />
                 <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                <Bar 
-                  dataKey="Investment" 
-                  fill="#94a3b8" 
-                  radius={[4, 4, 0, 0]} 
+                <Bar
+                  dataKey="Investment"
+                  fill="#94a3b8"
+                  radius={[4, 4, 0, 0]}
                   maxBarSize={40}
                 />
-                <Bar 
-                  dataKey="Present Value" 
-                  fill="#10b981" 
-                  radius={[4, 4, 0, 0]} 
+                <Bar
+                  dataKey="Present Value"
+                  fill="#10b981"
+                  radius={[4, 4, 0, 0]}
                   maxBarSize={40}
                 />
               </BarChart>

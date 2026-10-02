@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { Search, TrendingUp } from "lucide-react";
 import type { PortfolioSummary } from "@/types";
 import { formatCurrency } from "@/lib/utils/formatting";
 import {
@@ -20,17 +22,24 @@ export function PortfolioTable({
   isRefreshing?: boolean;
   lastUpdated?: Date | null;
 }) {
+  const [searchQuery, setSearchQuery] = useState("");
 
-
+  const filteredHoldings = data.holdings.filter((h) =>
+    h.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    h.sector.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-start justify-between">
-        <div>
-          <CardTitle>Portfolio Holdings</CardTitle>
-          <CardDescription>
-            Real-time snapshot of your investments. Total Investment: {formatCurrency(data.totalInvestment)}
-          </CardDescription>
+        <div className="flex items-center gap-4">
+          <TrendingUp className="h-8 w-8 text-muted-foreground" />
+          <div>
+            <CardTitle>Portfolio Holdings</CardTitle>
+            <CardDescription>
+              Real-time snapshot of your investments. Total Investment: {formatCurrency(data.totalInvestment)}
+            </CardDescription>
+          </div>
         </div>
         {data.missingDataCount > 0 && (
           <Badge variant="destructive" className="ml-4 shrink-0">
@@ -39,7 +48,17 @@ export function PortfolioTable({
         )}
       </CardHeader>
       <CardContent>
-        <div className="-mt-4 mb-3 flex items-center justify-end text-sm text-muted-foreground">
+        <div className="-mt-4 mb-3 flex items-center justify-between text-sm text-muted-foreground">
+          <div className="relative mt-2.5 w-64 max-w-sm">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search particulars..."
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-9"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <div className="flex items-center gap-2">
             {isRefreshing ? (
               <span className="flex items-center gap-2">
@@ -74,7 +93,7 @@ export function PortfolioTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.holdings.map((h) => {
+              {filteredHoldings.map((h) => {
                 const isGain = h.gainLoss !== null && h.gainLoss > 0;
                 const isLoss = h.gainLoss !== null && h.gainLoss < 0;
 

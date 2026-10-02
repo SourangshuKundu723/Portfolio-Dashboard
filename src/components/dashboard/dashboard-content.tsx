@@ -8,7 +8,7 @@ import { SectorPerformanceChart } from "./sector-performance-chart";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, PieChart as PieChartIcon, BarChart3, Briefcase } from "lucide-react";
 
 export function DashboardContent() {
   const [data, setData] = useState<PortfolioSummary | null>(null);
@@ -29,12 +29,12 @@ export function DashboardContent() {
       if (!res.ok) {
         throw new Error(`Failed to fetch data (status ${res.status})`);
       }
-      
+
       const json = (await res.json()) as ApiResponse<PortfolioSummary>;
       if (!json.success || !json.data) {
         throw new Error(json.error || "Failed to load portfolio data");
       }
-      
+
       setData(json.data);
       setLastUpdated(new Date());
       // Clear any previous background errors if successful
@@ -71,18 +71,33 @@ export function DashboardContent() {
       <div className="space-y-6 w-full">
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
-            <CardHeader><CardTitle>Portfolio Allocation</CardTitle></CardHeader>
-            <CardContent><Skeleton className="h-[300px] w-full" /></CardContent>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <PieChartIcon className="h-8 w-8 text-muted-foreground" />
+              <div>
+                <CardTitle>Portfolio Allocation</CardTitle>
+                <CardDescription>Investment distribution by sector</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle>Sector Performance</CardTitle></CardHeader>
-            <CardContent><Skeleton className="h-[300px] w-full" /></CardContent>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <BarChart3 className="h-8 w-8 text-muted-foreground" />
+              <div>
+                <CardTitle>Sector Performance</CardTitle>
+                <CardDescription>Compare investment vs present value across sectors</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
           </Card>
         </div>
         <Card>
-          <CardHeader>
-            <CardTitle>Portfolio Holdings</CardTitle>
-            <CardDescription>Fetching live market data...</CardDescription>
+          <CardHeader className="flex flex-row items-center gap-4">
+            <Briefcase className="h-8 w-8 text-muted-foreground" />
+            <div>
+              <CardTitle>Portfolio Holdings</CardTitle>
+              <CardDescription>Fetching live market data...</CardDescription>
+            </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -115,15 +130,15 @@ export function DashboardContent() {
 
 
       <div className="grid gap-6 md:grid-cols-2">
-        <PortfolioAllocationChart 
-          sectorSummaries={data.sectorSummaries} 
-          totalInvestment={data.totalInvestment} 
+        <PortfolioAllocationChart
+          sectorSummaries={data.sectorSummaries}
+          totalInvestment={data.totalInvestment}
         />
-        <SectorPerformanceChart 
-          sectorSummaries={data.sectorSummaries} 
+        <SectorPerformanceChart
+          sectorSummaries={data.sectorSummaries}
         />
       </div>
-      
+
       <PortfolioTable data={data} isRefreshing={isRefreshing} lastUpdated={lastUpdated} />
     </div>
   );
