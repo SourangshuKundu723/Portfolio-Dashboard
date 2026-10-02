@@ -8,7 +8,7 @@ import { SectorPerformanceChart } from "./sector-performance-chart";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, PieChart as PieChartIcon, BarChart3, Briefcase } from "lucide-react";
+import { AlertCircle, PieChart as PieChartIcon, BarChart3, TrendingUp } from "lucide-react";
 
 export function DashboardContent() {
   const [data, setData] = useState<PortfolioSummary | null>(null);
@@ -93,7 +93,7 @@ export function DashboardContent() {
         </div>
         <Card>
           <CardHeader className="flex flex-row items-center gap-4">
-            <Briefcase className="h-8 w-8 text-muted-foreground" />
+            <TrendingUp className="h-8 w-8 text-muted-foreground" />
             <div>
               <CardTitle>Portfolio Holdings</CardTitle>
               <CardDescription>Fetching live market data...</CardDescription>

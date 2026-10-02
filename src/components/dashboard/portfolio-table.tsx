@@ -86,10 +86,10 @@ export function PortfolioTable({
                 <TableHead className="text-right">Portfolio %</TableHead>
                 <TableHead className="text-right">NSE/BSE</TableHead>
                 <TableHead className="text-right">CMP</TableHead>
-                <TableHead className="text-right">P/E Ratio</TableHead>
-                <TableHead className="text-right">EPS</TableHead>
                 <TableHead className="text-right">Present Value</TableHead>
                 <TableHead className="text-right">Gain/Loss</TableHead>
+                <TableHead className="text-right">P/E Ratio</TableHead>
+                <TableHead className="text-right">EPS</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -121,12 +121,6 @@ export function PortfolioTable({
                     <TableCell className="text-right">
                       {h.marketData.cmp !== null ? formatCurrency(h.marketData.cmp) : "N/A"}
                     </TableCell>
-                    <TableCell className="text-right">
-                      {h.marketData.peRatio !== null ? h.marketData.peRatio.toFixed(2) : "N/A"}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {h.marketData.latestEarnings !== null ? h.marketData.latestEarnings.toFixed(2) : "N/A"}
-                    </TableCell>
                     <TableCell className="text-right font-medium">
                       {h.presentValue !== null ? formatCurrency(h.presentValue) : "N/A"}
                     </TableCell>
@@ -137,6 +131,12 @@ export function PortfolioTable({
                         ? (h.gainLoss > 0 ? "+" : "") + formatCurrency(h.gainLoss)
                         : "N/A"
                       }
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {h.marketData.peRatio !== null ? h.marketData.peRatio.toFixed(2) : "N/A"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {h.marketData.latestEarnings !== null ? h.marketData.latestEarnings.toFixed(2) : "N/A"}
                     </TableCell>
                   </TableRow>
                 );

@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { BarChart3 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +19,43 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 interface SectorPerformanceChartProps {
   sectorSummaries: SectorSummary[];
 }
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    const isPartial = data.isPartial;
+    const star = isPartial ? "*" : "";
+    
+    return (
+      <div className="rounded-lg border bg-background p-3 shadow-sm text-sm min-w-[200px]">
+        <div className="font-semibold mb-2">{label}</div>
+        <div className="flex flex-col gap-1.5">
+          <div className="flex justify-between items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-[2px] bg-[#94a3b8]" />
+              <span className="text-muted-foreground">Investment</span>
+            </div>
+            <span className="font-medium">{formatCurrency(data.Investment)}</span>
+          </div>
+          <div className="flex justify-between items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-[2px] bg-[#10b981]" />
+              <span className="text-muted-foreground">Present Value{star}</span>
+            </div>
+            <span className="font-medium">{formatCurrency(data["Present Value"])}</span>
+          </div>
+          <div className="flex justify-between items-center gap-4 mt-1 pt-1.5 border-t">
+            <span className="text-muted-foreground">Gain/Loss{star}</span>
+            <span className={`font-medium ${data["Gain/Loss"] >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+              {data["Gain/Loss"] > 0 ? "+" : ""}{formatCurrency(data["Gain/Loss"])}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
 
 export function SectorPerformanceChart({
   sectorSummaries,
@@ -29,6 +67,7 @@ export function SectorPerformanceChart({
       name: s.missingDataCount > 0 ? `${s.sector}*` : s.sector,
       Investment: s.totalInvestment,
       "Present Value": s.totalPresentValue !== null ? s.totalPresentValue : 0,
+      "Gain/Loss": s.gainLoss !== null ? s.gainLoss : 0,
       isPartial: s.missingDataCount > 0,
     }))
     .sort((a, b) => b.Investment - a.Investment); // Sort by highest investment
@@ -74,7 +113,7 @@ export function SectorPerformanceChart({
                   tick={{ fontSize: 12 }}
                 />
                 <Tooltip
-                  formatter={(value: any) => formatCurrency(Number(value) || 0)}
+                  content={<CustomTooltip />}
                   cursor={{ fill: 'rgba(0,0,0,0.05)' }}
                 />
                 <Legend wrapperStyle={{ paddingTop: '20px' }} />
