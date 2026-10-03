@@ -57,7 +57,7 @@ sequenceDiagram
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/SourangshuKundu723/Portfolio-Dashboard.git
    cd portfolio-dashboard
    ```
 
