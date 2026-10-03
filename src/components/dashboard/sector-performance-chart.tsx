@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { SectorSummary } from "@/types";
 import { formatCurrency } from "@/lib/utils/formatting";
 import {
@@ -11,7 +12,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Cell,
 } from "recharts";
 import { BarChart3 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,12 +20,12 @@ interface SectorPerformanceChartProps {
   sectorSummaries: SectorSummary[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     const isPartial = data.isPartial;
-    const star = isPartial ? "*" : "";
-    
+    const star = isPartial ? <span className="text-red-500">*</span> : null;
+
     return (
       <div className="rounded-lg border bg-background p-3 shadow-sm text-sm min-w-[200px]">
         <div className="font-semibold mb-2">{label}</div>
@@ -60,6 +60,14 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function SectorPerformanceChart({
   sectorSummaries,
 }: SectorPerformanceChartProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   // Prepare data for the bar chart
   const data = sectorSummaries
     .filter((s) => s.totalInvestment > 0)
@@ -75,7 +83,7 @@ export function SectorPerformanceChart({
   return (
     <Card className="flex flex-col">
       <CardHeader className="flex flex-row items-center gap-4">
-        <BarChart3 className="h-8 w-8 text-muted-foreground" />
+        <BarChart3 className="h-8 w-8 text-violet-500" />
         <div>
           <CardTitle>Sector Performance</CardTitle>
           <CardDescription>Compare investment vs present value across sectors</CardDescription>
@@ -95,7 +103,7 @@ export function SectorPerformanceChart({
                   top: 20,
                   right: 30,
                   left: 20,
-                  bottom: 5,
+                  bottom: isMobile ? 35 : 5,
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -103,8 +111,12 @@ export function SectorPerformanceChart({
                   dataKey="name"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12 }}
-                  dy={10}
+                  interval={isMobile ? 0 : "preserveEnd"}
+                  angle={isMobile ? -45 : 0}
+                  textAnchor={isMobile ? "end" : "middle"}
+                  tick={{ fontSize: 12, fill: "currentColor" }}
+                  dy={isMobile ? 0 : 10}
+                  dx={isMobile ? -5 : 0}
                 />
                 <YAxis
                   tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}k`}

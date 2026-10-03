@@ -4,8 +4,8 @@ type CacheEntry<T> = {
 };
 
 class MarketDataCache {
-  private cache = new Map<string, CacheEntry<any>>();
-  private ongoingRequests = new Map<string, Promise<any>>();
+  private cache = new Map<string, CacheEntry<unknown>>();
+  private ongoingRequests = new Map<string, Promise<unknown>>();
 
   async getOrFetch<T>(
     key: string,

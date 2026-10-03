@@ -1,4 +1,4 @@
-import type { Holding, MarketData } from "@/types";
+import type { Holding } from "@/types";
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { marketDataCache } from "./cache";

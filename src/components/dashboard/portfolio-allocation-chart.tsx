@@ -48,7 +48,7 @@ export function PortfolioAllocationChart({
   return (
     <Card className="flex flex-col">
       <CardHeader className="flex flex-row items-center gap-4">
-        <PieChartIcon className="h-8 w-8 text-muted-foreground" />
+        <PieChartIcon className="h-8 w-8 text-blue-500" />
         <div>
           <CardTitle>Portfolio Allocation</CardTitle>
           <CardDescription>Investment distribution by sector</CardDescription>
@@ -60,7 +60,7 @@ export function PortfolioAllocationChart({
             No data available
           </div>
         ) : (
-          <div className="h-[250px] w-full">
+          <div className="h-[300px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -84,11 +84,12 @@ export function PortfolioAllocationChart({
                   labelFormatter={(name) => `Sector: ${name}`}
                 />
                 <Legend
-                  layout="vertical"
-                  verticalAlign="middle"
-                  align="right"
+                  layout="horizontal"
+                  verticalAlign="bottom"
+                  align="center"
                   wrapperStyle={{
                     fontSize: '12px',
+                    paddingTop: '20px',
                   }}
                 />
               </PieChart>

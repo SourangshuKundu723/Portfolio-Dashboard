@@ -10,7 +10,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell,
 } from "recharts";
 import { Trophy, TrendingDown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +40,7 @@ export function TopPerformersChart({ data }: { data: PortfolioSummary }) {
     "Gain/Loss": h.gainLoss as number,
   }));
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
     if (active && payload && payload.length) {
       const val = payload[0].value;
       const isGain = val >= 0;
@@ -57,7 +56,7 @@ export function TopPerformersChart({ data }: { data: PortfolioSummary }) {
     return null;
   };
 
-  const renderChart = (chartData: any[], color: string, emptyMessage: string) => {
+  const renderChart = (chartData: { name: string; "Gain/Loss": number }[], color: string, emptyMessage: string) => {
     if (chartData.length === 0) {
       return (
         <div className="flex h-[250px] items-center justify-center text-muted-foreground text-sm">

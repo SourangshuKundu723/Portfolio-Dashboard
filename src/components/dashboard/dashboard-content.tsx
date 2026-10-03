@@ -6,6 +6,7 @@ import { PortfolioTable } from "./portfolio-table";
 import { PortfolioAllocationChart } from "./portfolio-allocation-chart";
 import { SectorPerformanceChart } from "./sector-performance-chart";
 import { TopPerformersChart } from "./top-performers-chart";
+import { HeroMetrics } from "./hero-metrics";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -70,10 +71,39 @@ export function DashboardContent() {
   if (loading) {
     return (
       <div className="space-y-6 w-full">
+        <div className="grid gap-6 md:grid-cols-3">
+          <Card>
+            <CardContent className="p-6 flex items-center justify-between">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[100px]" />
+                <Skeleton className="h-8 w-[140px]" />
+              </div>
+              <Skeleton className="h-12 w-12 rounded-full" />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 flex items-center justify-between">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[100px]" />
+                <Skeleton className="h-8 w-[140px]" />
+              </div>
+              <Skeleton className="h-12 w-12 rounded-full" />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 flex items-center justify-between">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[100px]" />
+                <Skeleton className="h-8 w-[140px]" />
+              </div>
+              <Skeleton className="h-12 w-12 rounded-full" />
+            </CardContent>
+          </Card>
+        </div>
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader className="flex flex-row items-center gap-4">
-              <PieChartIcon className="h-8 w-8 text-muted-foreground" />
+              <PieChartIcon className="h-8 w-8 text-blue-500" />
               <div>
                 <CardTitle>Portfolio Allocation</CardTitle>
                 <CardDescription>Investment distribution by sector</CardDescription>
@@ -83,7 +113,7 @@ export function DashboardContent() {
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center gap-4">
-              <BarChart3 className="h-8 w-8 text-muted-foreground" />
+              <BarChart3 className="h-8 w-8 text-violet-500" />
               <div>
                 <CardTitle>Sector Performance</CardTitle>
                 <CardDescription>Compare investment vs present value across sectors</CardDescription>
@@ -116,7 +146,7 @@ export function DashboardContent() {
         </div>
         <Card>
           <CardHeader className="flex flex-row items-center gap-4">
-            <TrendingUp className="h-8 w-8 text-muted-foreground" />
+            <TrendingUp className="h-8 w-8 text-teal-500" />
             <div>
               <CardTitle>Portfolio Holdings</CardTitle>
               <CardDescription>Fetching live market data...</CardDescription>
@@ -150,7 +180,7 @@ export function DashboardContent() {
 
   return (
     <div className="space-y-8 w-full">
-
+      <HeroMetrics data={data} />
 
       <div className="grid gap-6 md:grid-cols-2">
         <PortfolioAllocationChart
