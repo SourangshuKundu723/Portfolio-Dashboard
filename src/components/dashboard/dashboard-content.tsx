@@ -5,10 +5,11 @@ import type { ApiResponse, PortfolioSummary } from "@/types";
 import { PortfolioTable } from "./portfolio-table";
 import { PortfolioAllocationChart } from "./portfolio-allocation-chart";
 import { SectorPerformanceChart } from "./sector-performance-chart";
+import { TopPerformersChart } from "./top-performers-chart";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, PieChart as PieChartIcon, BarChart3, TrendingUp } from "lucide-react";
+import { AlertCircle, PieChart as PieChartIcon, BarChart3, TrendingUp, Trophy, TrendingDown } from "lucide-react";
 
 export function DashboardContent() {
   const [data, setData] = useState<PortfolioSummary | null>(null);
@@ -91,6 +92,28 @@ export function DashboardContent() {
             <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
           </Card>
         </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <Trophy className="h-8 w-8 text-emerald-500 opacity-80" />
+              <div>
+                <CardTitle>Top Winners</CardTitle>
+                <CardDescription>Highest gaining stocks</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <TrendingDown className="h-8 w-8 text-red-500 opacity-80" />
+              <div>
+                <CardTitle>Top Losers</CardTitle>
+                <CardDescription>Lowest performing stocks</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
+          </Card>
+        </div>
         <Card>
           <CardHeader className="flex flex-row items-center gap-4">
             <TrendingUp className="h-8 w-8 text-muted-foreground" />
@@ -138,6 +161,8 @@ export function DashboardContent() {
           sectorSummaries={data.sectorSummaries}
         />
       </div>
+
+      <TopPerformersChart data={data} />
 
       <PortfolioTable data={data} isRefreshing={isRefreshing} lastUpdated={lastUpdated} />
     </div>

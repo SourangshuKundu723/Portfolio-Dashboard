@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
-import { Search, TrendingUp } from "lucide-react";
+import { Search, TrendingUp, ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react";
 import type { PortfolioSummary } from "@/types";
 import { formatCurrency } from "@/lib/utils/formatting";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -23,11 +24,73 @@ export function PortfolioTable({
   lastUpdated?: Date | null;
 }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
 
   const filteredHoldings = data.holdings.filter((h) =>
     h.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     h.sector.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const sortedHoldings = [...filteredHoldings].sort((a, b) => {
+    if (!sortConfig) return 0;
+
+    let aValue: any;
+    let bValue: any;
+
+    switch (sortConfig.key) {
+      case "companyName": aValue = a.companyName; bValue = b.companyName; break;
+      case "purchasePrice": aValue = a.purchasePrice; bValue = b.purchasePrice; break;
+      case "quantity": aValue = a.quantity; bValue = b.quantity; break;
+      case "investment": aValue = a.investment; bValue = b.investment; break;
+      case "portfolioPercent": aValue = a.portfolioPercent; bValue = b.portfolioPercent; break;
+      case "exchange": aValue = a.exchange; bValue = b.exchange; break;
+      case "cmp": aValue = a.marketData.cmp ?? -Infinity; bValue = b.marketData.cmp ?? -Infinity; break;
+      case "presentValue": aValue = a.presentValue ?? -Infinity; bValue = b.presentValue ?? -Infinity; break;
+      case "gainLoss": aValue = a.gainLoss ?? -Infinity; bValue = b.gainLoss ?? -Infinity; break;
+      case "peRatio": aValue = a.marketData.peRatio ?? -Infinity; bValue = b.marketData.peRatio ?? -Infinity; break;
+      case "eps": aValue = a.marketData.latestEarnings ?? -Infinity; bValue = b.marketData.latestEarnings ?? -Infinity; break;
+      default: return 0;
+    }
+
+    if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  const requestSort = (key: string) => {
+    if (sortConfig && sortConfig.key === key) {
+      if (sortConfig.direction === "asc") {
+        setSortConfig({ key, direction: "desc" });
+      } else {
+        setSortConfig(null);
+      }
+    } else {
+      setSortConfig({ key, direction: "asc" });
+    }
+  };
+
+  const SortableHeader = ({ label, sortKey, align = "left" }: { label: string, sortKey: string, align?: "left" | "right" }) => {
+    return (
+      <TableHead className={align === "right" ? "text-right" : ""}>
+        <div
+          onClick={() => requestSort(sortKey)}
+          className={`group flex items-center gap-1 cursor-pointer hover:text-foreground select-none ${align === "right" ? "justify-end" : "justify-start"}`}
+          title={`Sort by ${label}`}
+        >
+          {label}
+          {sortConfig?.key === sortKey ? (
+            sortConfig.direction === "asc" ? (
+              <ChevronUp className="h-3 w-3" />
+            ) : (
+              <ChevronDown className="h-3 w-3" />
+            )
+          ) : (
+            <ArrowUpDown className="h-3 w-3 opacity-0 group-hover:opacity-50 transition-opacity" />
+          )}
+        </div>
+      </TableHead>
+    );
+  };
 
   return (
     <Card>
@@ -75,25 +138,25 @@ export function PortfolioTable({
             )}
           </div>
         </div>
-        <div className="rounded-md border">
+        <div className="rounded-md border pl-1 [&>div]:max-h-[425px] [&>div]:overflow-auto">
           <Table>
-            <TableHeader>
+            <TableHeader className="sticky top-0 bg-card z-10 shadow-sm">
               <TableRow>
-                <TableHead>Particulars</TableHead>
-                <TableHead className="text-right">Purchase Price</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-                <TableHead className="text-right">Investment</TableHead>
-                <TableHead className="text-right">Portfolio %</TableHead>
-                <TableHead className="text-right">NSE/BSE</TableHead>
-                <TableHead className="text-right">CMP</TableHead>
-                <TableHead className="text-right">Present Value</TableHead>
-                <TableHead className="text-right">Gain/Loss</TableHead>
-                <TableHead className="text-right">P/E Ratio</TableHead>
-                <TableHead className="text-right">EPS</TableHead>
+                <SortableHeader label="Particulars" sortKey="companyName" />
+                <SortableHeader label="Purchase Price" sortKey="purchasePrice" align="right" />
+                <SortableHeader label="Quantity" sortKey="quantity" align="right" />
+                <SortableHeader label="Investment" sortKey="investment" align="right" />
+                <SortableHeader label="Portfolio %" sortKey="portfolioPercent" align="right" />
+                <SortableHeader label="NSE/BSE" sortKey="exchange" align="right" />
+                <SortableHeader label="CMP" sortKey="cmp" align="right" />
+                <SortableHeader label="Present Value" sortKey="presentValue" align="right" />
+                <SortableHeader label="Gain/Loss" sortKey="gainLoss" align="right" />
+                <SortableHeader label="P/E Ratio" sortKey="peRatio" align="right" />
+                <SortableHeader label="EPS" sortKey="eps" align="right" />
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredHoldings.map((h) => {
+              {sortedHoldings.map((h) => {
                 const isGain = h.gainLoss !== null && h.gainLoss > 0;
                 const isLoss = h.gainLoss !== null && h.gainLoss < 0;
 
