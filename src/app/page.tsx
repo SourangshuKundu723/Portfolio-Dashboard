@@ -1,17 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  BarChart3,
-  PieChart,
-  TrendingUp,
-  Wallet,
-} from "lucide-react";
 
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 

@@ -85,8 +85,6 @@ export function PortfolioAllocationChart({
                 />
                 <Legend
                   layout="horizontal"
-                  verticalAlign="bottom"
-                  align="center"
                   wrapperStyle={{
                     fontSize: '12px',
                     paddingTop: '20px',
