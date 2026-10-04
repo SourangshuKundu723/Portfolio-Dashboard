@@ -27,19 +27,19 @@ const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?:
     const star = isPartial ? <span className="text-red-500">*</span> : null;
 
     return (
-      <div className="rounded-lg border bg-background p-3 shadow-sm text-sm min-w-[200px]">
+      <div className="rounded-lg border bg-background p-3 shadow-sm text-sm min-w-50">
         <div className="font-semibold mb-2">{label}</div>
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-[2px] bg-[#94a3b8]" />
+              <div className="w-2.5 h-2.5 rounded-xs bg-[#94a3b8]" />
               <span className="text-muted-foreground">Investment</span>
             </div>
             <span className="font-medium">{formatCurrency(data.Investment)}</span>
           </div>
           <div className="flex justify-between items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-[2px] bg-[#10b981]" />
+              <div className="w-2.5 h-2.5 rounded-xs bg-[#10b981]" />
               <span className="text-muted-foreground">Present Value{star}</span>
             </div>
             <span className="font-medium">{formatCurrency(data["Present Value"])}</span>
@@ -91,11 +91,11 @@ export function SectorPerformanceChart({
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         {data.length === 0 ? (
-          <div className="flex h-[250px] items-center justify-center text-muted-foreground">
+          <div className="flex h-62.5 items-center justify-center text-muted-foreground">
             No data available
           </div>
         ) : (
-          <div className="h-[250px] w-full">
+          <div className="h-62.5 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}

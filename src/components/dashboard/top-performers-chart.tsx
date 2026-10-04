@@ -59,14 +59,14 @@ export function TopPerformersChart({ data }: { data: PortfolioSummary }) {
   const renderChart = (chartData: { name: string; "Gain/Loss": number }[], color: string, emptyMessage: string) => {
     if (chartData.length === 0) {
       return (
-        <div className="flex h-[250px] items-center justify-center text-muted-foreground text-sm">
+        <div className="flex h-62.5 items-center justify-center text-muted-foreground text-sm">
           {emptyMessage}
         </div>
       );
     }
     
     return (
-      <div className="h-[250px] w-full">
+      <div className="h-62.5 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}

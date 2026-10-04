@@ -132,7 +132,7 @@ export function PortfolioTable({
           </div>
           <div className="flex items-center mt-2.5">
             {isRefreshing ? (
-              <div className="relative inline-flex overflow-hidden rounded-full p-[1px]">
+              <div className="relative inline-flex overflow-hidden rounded-full p-px">
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,transparent_50%,#10b981_100%)]" />
                 <Badge variant="outline" className="relative inline-flex h-full w-full items-center justify-center rounded-full bg-background px-3 py-1 font-semibold backdrop-blur-3xl border-0 gap-2">
                   <span className="relative flex h-2 w-2">
@@ -149,7 +149,7 @@ export function PortfolioTable({
             )}
           </div>
         </div>
-        <div className="rounded-md border pl-1 [&>div]:max-h-[425px] [&>div]:overflow-auto">
+        <div className="rounded-md border pl-1 [&>div]:max-h-106.25 [&>div]:overflow-auto">
           <Table>
             <TableHeader className="sticky top-0 bg-card z-10 shadow-sm">
               <TableRow>

@@ -75,8 +75,8 @@ export function DashboardContent() {
           <Card>
             <CardContent className="p-6 flex items-center justify-between">
               <div className="space-y-2">
-                <Skeleton className="h-4 w-[100px]" />
-                <Skeleton className="h-8 w-[140px]" />
+                <Skeleton className="h-4 w-25" />
+                <Skeleton className="h-8 w-35" />
               </div>
               <Skeleton className="h-12 w-12 rounded-full" />
             </CardContent>
@@ -84,8 +84,8 @@ export function DashboardContent() {
           <Card>
             <CardContent className="p-6 flex items-center justify-between">
               <div className="space-y-2">
-                <Skeleton className="h-4 w-[100px]" />
-                <Skeleton className="h-8 w-[140px]" />
+                <Skeleton className="h-4 w-25" />
+                <Skeleton className="h-8 w-35" />
               </div>
               <Skeleton className="h-12 w-12 rounded-full" />
             </CardContent>
@@ -93,8 +93,8 @@ export function DashboardContent() {
           <Card>
             <CardContent className="p-6 flex items-center justify-between">
               <div className="space-y-2">
-                <Skeleton className="h-4 w-[100px]" />
-                <Skeleton className="h-8 w-[140px]" />
+                <Skeleton className="h-4 w-25" />
+                <Skeleton className="h-8 w-35" />
               </div>
               <Skeleton className="h-12 w-12 rounded-full" />
             </CardContent>
@@ -109,7 +109,7 @@ export function DashboardContent() {
                 <CardDescription>Investment distribution by sector</CardDescription>
               </div>
             </CardHeader>
-            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
+            <CardContent><Skeleton className="h-62.5 w-full" /></CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center gap-4">
@@ -119,7 +119,7 @@ export function DashboardContent() {
                 <CardDescription>Compare investment vs present value across sectors</CardDescription>
               </div>
             </CardHeader>
-            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
+            <CardContent><Skeleton className="h-62.5 w-full" /></CardContent>
           </Card>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -131,7 +131,7 @@ export function DashboardContent() {
                 <CardDescription>Highest gaining stocks</CardDescription>
               </div>
             </CardHeader>
-            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
+            <CardContent><Skeleton className="h-62.5 w-full" /></CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center gap-4">
@@ -141,7 +141,7 @@ export function DashboardContent() {
                 <CardDescription>Lowest performing stocks</CardDescription>
               </div>
             </CardHeader>
-            <CardContent><Skeleton className="h-[250px] w-full" /></CardContent>
+            <CardContent><Skeleton className="h-62.5 w-full" /></CardContent>
           </Card>
         </div>
         <Card>
