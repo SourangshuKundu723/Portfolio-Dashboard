@@ -74,9 +74,13 @@ sequenceDiagram
 4. **Open your browser:**
    Navigate to [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
+## 🌐 Live Demo
+
+[View the Live Dashboard](https://dynamic-portfolio-dashboard-khaki.vercel.app/)
+
 ## 📋 Technical Highlights
 
-### 1. 🌐 Market Data & Rate Limiting
+### 1. 📈 Market Data & Rate Limiting
 
 Yahoo Finance and Google Finance do not provide official free public APIs for this use case.
 
